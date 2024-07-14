@@ -1,6 +1,7 @@
 import pygame, sys, os
 from random import randint, choice
 
+
 pygame.init()
 size = (576,1024) 
 screen = pygame.display.set_mode(size)
@@ -32,11 +33,27 @@ class Ground(pygame.sprite.Sprite):
     def update(self):
         self.ground_movement()
 
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('assets/pipe-green.png').convert_alpha()
+        self.image = pygame.transform.scale2x(self.image)
+        self.rect = self.image.get_rect(bottom=1300)
+     
+    def flip_pipe(self):
+        self.image = pygame.transform.rotate(self.image,180)
+        self.rect = self.image.get_rect(bottom=310)
+              
+
 #Instances
 sky = Sky()
 ground = Ground()
 ground_2 = Ground()
 ground_2.initial_position()
+pipe = Pipe()
+pipe_2 = Pipe()
+pipe_2.flip_pipe()
+
 #Sprite Groups
 sky_group = pygame.sprite.GroupSingle()
 sky_group.add(sky)
@@ -45,6 +62,10 @@ ground_group = pygame.sprite.Group()
 ground_group.add(ground)
 ground_group.add(ground_2)
 
+obstacle_group = pygame.sprite.Group()
+obstacle_group.add(pipe)
+obstacle_group.add(pipe_2)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -52,9 +73,9 @@ while True:
             sys.exit()
             
     sky_group.draw(screen)
-    ground_group.draw(screen)
     ground_group.update()
- 
+    obstacle_group.draw(screen)
+    ground_group.draw(screen)
     pygame.display.update()
     
     clock.tick(60)    
