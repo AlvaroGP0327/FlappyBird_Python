@@ -34,18 +34,29 @@ class Ground(pygame.sprite.Sprite):
         self.ground_movement()
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, is_flipped=False):
         super().__init__()
         self.image = pygame.image.load('assets/pipe-green.png').convert_alpha()
         self.image = pygame.transform.scale2x(self.image)
-        self.rect = self.image.get_rect(bottom=1300)
+        
+        if is_flipped:
+            self.flip_pipe()
+        self.rect = self.image.get_rect(bottom=1300 if not is_flipped else 310)
+        
+        self.initial_position()
      
     def flip_pipe(self):
         self.image = pygame.transform.rotate(self.image,180)
-        self.rect = self.image.get_rect(bottom=310)
+        
     
     def initial_position(self):
         self.rect.right = 524        
+
+    def animation_pipe(self):
+        pass
+    
+    def update(self):
+        self.initial_position()
 
 #Instances
 sky = Sky()
@@ -53,10 +64,8 @@ ground = Ground()
 ground_2 = Ground()
 ground_2.initial_position()
 pipe = Pipe()
-pipe_2 = Pipe()
-pipe_2.flip_pipe()
-pipe.initial_position()
-pipe_2.initial_position()
+pipe_2 = Pipe(is_flipped=True)
+
 
 #Sprite Groups
 sky_group = pygame.sprite.GroupSingle()
@@ -80,6 +89,9 @@ while True:
     ground_group.update()
     obstacle_group.draw(screen)
     ground_group.draw(screen)
+    obstacle_group.update()
+    
+    
     pygame.display.update()
     
     clock.tick(60)    
