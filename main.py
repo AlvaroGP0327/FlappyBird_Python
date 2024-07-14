@@ -43,7 +43,9 @@ class Pipe(pygame.sprite.Sprite):
     def flip_pipe(self):
         self.image = pygame.transform.rotate(self.image,180)
         self.rect = self.image.get_rect(bottom=310)
-              
+    
+    def initial_position(self):
+        self.rect.right = 524        
 
 #Instances
 sky = Sky()
@@ -53,6 +55,8 @@ ground_2.initial_position()
 pipe = Pipe()
 pipe_2 = Pipe()
 pipe_2.flip_pipe()
+pipe.initial_position()
+pipe_2.initial_position()
 
 #Sprite Groups
 sky_group = pygame.sprite.GroupSingle()
