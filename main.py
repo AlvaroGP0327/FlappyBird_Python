@@ -95,25 +95,21 @@ while True:
             
         if event.type == obstacle_timer:
             #set position before instantiate pipes
+            #random position for bottom pipe
             topleft_pipe_position = randint(400,800) #topleft
             pipe = Pipe(topleft_pipe_position)
+            #get the y position relative to bottom pipe position
             top_pipe_position = pipe.rect.topleft[1]
             top_pipe_position += pipe_gap
             pipe_2 = Pipe(top_pipe_position,is_flipped=True)
             obstacle_group.add(pipe)
             obstacle_group.add(pipe_2)
             
-            
-            
-            
-            
     ground_group.update()
     obstacle_group.update()
     sky_group.draw(screen)
     obstacle_group.draw(screen)
     ground_group.draw(screen)
-   
-    
     
     pygame.display.update()
     
