@@ -34,37 +34,40 @@ class Ground(pygame.sprite.Sprite):
         self.ground_movement()
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self, is_flipped=False):
+    def __init__(self,position, is_flipped=False):
         super().__init__()
         self.image = pygame.image.load('assets/pipe-green.png').convert_alpha()
         self.image = pygame.transform.scale2x(self.image)
         
+        
         if is_flipped:
             self.flip_pipe()
-        self.rect = self.image.get_rect(bottom=1300 if not is_flipped else 310)
-        
-        self.initial_position()
-     
-    def flip_pipe(self):
-        self.image = pygame.transform.rotate(self.image,180)
-        
+            self.rect = self.image.get_rect(midtop=(600,position))
+        else:
+            self.rect = self.image.get_rect(midbottom=(600,position))
+ 
     
-    def initial_position(self):
-        self.rect.right = 524        
+    def flip_pipe(self):
+        self.image = pygame.transform.rotate(self.image,180)   
 
-    def animation_pipe(self):
-        pass
+    def movement_pipe(self):
+        self.rect.x -= 5
+    
+    def destroy_pipes(self):
+        if self.rect.right < 0:
+            self.kill()
+        
     
     def update(self):
-        self.initial_position()
+        self.movement_pipe()
+        self.destroy_pipes()
 
 #Instances
 sky = Sky()
 ground = Ground()
 ground_2 = Ground()
 ground_2.initial_position()
-pipe = Pipe()
-pipe_2 = Pipe(is_flipped=True)
+
 
 
 #Sprite Groups
@@ -76,8 +79,13 @@ ground_group.add(ground)
 ground_group.add(ground_2)
 
 obstacle_group = pygame.sprite.Group()
-obstacle_group.add(pipe)
-obstacle_group.add(pipe_2)
+
+
+#Timer for create random pipes obstalces.
+obstacle_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(obstacle_timer,1500)
+
+pipe_gap = 200
 
 while True:
     for event in pygame.event.get():
@@ -85,11 +93,23 @@ while True:
             pygame.quit()
             sys.exit()
             
-    sky_group.draw(screen)
+        if event.type == obstacle_timer:
+            #set position before instantiate pipes
+            bottom_pipe_position = randint(1100,1420)
+            top_pipe_position = bottom_pipe_position - pipe_gap
+            pipe = Pipe(bottom_pipe_position)
+            obstacle_group.add(pipe)
+            
+            
+            
+            
+            
     ground_group.update()
+    obstacle_group.update()
+    sky_group.draw(screen)
     obstacle_group.draw(screen)
     ground_group.draw(screen)
-    obstacle_group.update()
+   
     
     
     pygame.display.update()
