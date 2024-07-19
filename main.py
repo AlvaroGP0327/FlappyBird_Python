@@ -42,9 +42,9 @@ class Pipe(pygame.sprite.Sprite):
         
         if is_flipped:
             self.flip_pipe()
-            self.rect = self.image.get_rect(midtop=(600,position))
+            self.rect = self.image.get_rect(bottomleft=(600,position))
         else:
-            self.rect = self.image.get_rect(midbottom=(600,position))
+            self.rect = self.image.get_rect(topleft=(600,position))
  
     
     def flip_pipe(self):
@@ -85,7 +85,7 @@ obstacle_group = pygame.sprite.Group()
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer,1500)
 
-pipe_gap = 200
+pipe_gap = -200
 
 while True:
     for event in pygame.event.get():
@@ -95,10 +95,14 @@ while True:
             
         if event.type == obstacle_timer:
             #set position before instantiate pipes
-            bottom_pipe_position = randint(1100,1420)
-            top_pipe_position = bottom_pipe_position - pipe_gap
-            pipe = Pipe(bottom_pipe_position)
+            topleft_pipe_position = randint(400,800) #topleft
+            pipe = Pipe(topleft_pipe_position)
+            print(pipe.rect.topleft) 
+            top_pipe_position = pipe.rect.topleft[1]
+            print(top_pipe_position)
+            pipe_2 = Pipe(top_pipe_position,is_flipped=True)
             obstacle_group.add(pipe)
+            obstacle_group.add(pipe_2)
             
             
             
