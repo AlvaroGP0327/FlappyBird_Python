@@ -83,9 +83,9 @@ obstacle_group = pygame.sprite.Group()
 
 #Timer for create random pipes obstalces.
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer,1500)
+pygame.time.set_timer(obstacle_timer,2800)
 
-pipe_gap = -200
+pipe_gap = -300
 
 while True:
     for event in pygame.event.get():
@@ -97,9 +97,8 @@ while True:
             #set position before instantiate pipes
             topleft_pipe_position = randint(400,800) #topleft
             pipe = Pipe(topleft_pipe_position)
-            print(pipe.rect.topleft) 
             top_pipe_position = pipe.rect.topleft[1]
-            print(top_pipe_position)
+            top_pipe_position += pipe_gap
             pipe_2 = Pipe(top_pipe_position,is_flipped=True)
             obstacle_group.add(pipe)
             obstacle_group.add(pipe_2)
