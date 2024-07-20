@@ -1,7 +1,6 @@
 import pygame, sys, os
 from random import randint, choice
 
-
 pygame.init()
 size = (576,1024) 
 screen = pygame.display.set_mode(size)
@@ -56,7 +55,6 @@ class Pipe(pygame.sprite.Sprite):
     def destroy_pipes(self):
         if self.rect.right < 0:
             self.kill()
-        
     
     def update(self):
         self.movement_pipe()
@@ -68,8 +66,6 @@ ground = Ground()
 ground_2 = Ground()
 ground_2.initial_position()
 
-
-
 #Sprite Groups
 sky_group = pygame.sprite.GroupSingle()
 sky_group.add(sky)
@@ -79,7 +75,6 @@ ground_group.add(ground)
 ground_group.add(ground_2)
 
 obstacle_group = pygame.sprite.Group()
-
 
 #Timer for create random pipes obstalces.
 obstacle_timer = pygame.USEREVENT + 1
@@ -96,7 +91,7 @@ while True:
         if event.type == obstacle_timer:
             #set position before instantiate pipes
             #random position for bottom pipe
-            topleft_pipe_position = randint(400,800) #topleft
+            topleft_pipe_position = choice([400,500,600,750]) #topleft
             pipe = Pipe(topleft_pipe_position)
             #get the y position relative to bottom pipe position
             top_pipe_position = pipe.rect.topleft[1]
