@@ -65,27 +65,44 @@ class Pipe(pygame.sprite.Sprite):
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        
+        self.down_flap = pygame.image.load('assets/redbird-downflap.png').convert_alpha() 
+        self.down_flap = pygame.transform.scale2x(self.down_flap)
+        self.up_flap = pygame.image.load('assets/redbird-upflap.png').convert_alpha()
+        self.up_flap = pygame.transform.scale2x(self.up_flap)
+        
         self.image = pygame.image.load('assets/redbird-midflap.png').convert_alpha()
         self.image = pygame.transform.scale2x(self.image)
         self.rect = self.image.get_rect(topleft=(50,512))
         
         #bird object initiate with force gravity action.
         self.gravity = 1
-        self.fly_bird = 1
+        self.fly_bird = 5
+        self.jumping = False
     
     def gravity_force_for_bird(self):
         self.rect.y += self.gravity
-        self.image = pygame.image.load('assets/redbird-upflap.png').convert_alpha()
-        self.image = pygame.transform.scale2x(self.image)
+        if not self.jumping:
+            self.image = self.up_flap
+        
     
     def jump_bird(self):
         self.rect.y -= self.fly_bird
-        self.image = pygame.image.load('assets/redbird-downflap.png').convert_alpha()    
-        self.image = pygame.transform.scale2x(self.image)
+        self.image = self.down_flap
         
+    
+    def player_input(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.jumping = True
+            self.jump_bird()
+        else:
+            self.jumping = False
+    
     def update(self):
+        self.player_input()
         self.gravity_force_for_bird()
-        #self.jump_bird()
+        
 
 #Instances
 sky = Sky()
@@ -131,6 +148,7 @@ while True:
             pipe_2 = Pipe(top_pipe_position,is_flipped=True)
             obstacle_group.add(pipe)
             obstacle_group.add(pipe_2)
+    
             
     #draw and update all scenario
     ground_group.update()
@@ -142,7 +160,7 @@ while True:
     #draw and update player
     player_group.draw(screen)
     player_group.update()
-    
+    #print(player_group.sprite.jumping) Como acceder al objeto sprite dentro de un grupo
     pygame.display.update()
     
     clock.tick(60)    
