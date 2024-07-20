@@ -52,7 +52,7 @@ class Pipe(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image,180)   
 
     def movement_pipe(self):
-        self.rect.x -= 5
+        self.rect.x -= 8
     
     def destroy_pipes(self):
         if self.rect.right < 0:
@@ -76,25 +76,25 @@ class Bird(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(50,512))
         
         #bird object initiate with force gravity action.
-        self.gravity = 1
-        self.fly_bird = 5
+        self.gravity = 2
+        self.fly_bird = 15
         self.jumping = False
     
     def gravity_force_for_bird(self):
+        self.gravity += 1
         self.rect.y += self.gravity
         if not self.jumping:
             self.image = self.up_flap
         
-    
     def jump_bird(self):
         self.rect.y -= self.fly_bird
         self.image = self.down_flap
-        
     
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             self.jumping = True
+            self.gravity = 0
             self.jump_bird()
         else:
             self.jumping = False
@@ -126,7 +126,7 @@ obstacle_group = pygame.sprite.Group()
 
 #Timer for create random pipes obstalces.
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer,2000)
+pygame.time.set_timer(obstacle_timer,1200)
 
 pipe_gap = -300
 
@@ -140,7 +140,6 @@ while True:
             #set position before instantiate pipes
             #random position for bottom pipe
             topleft_pipe_position = choice([400,500,600,750]) #topleft
-            print(topleft_pipe_position)
             pipe = Pipe(topleft_pipe_position)
             #get the y position relative to bottom pipe position
             top_pipe_position = pipe.rect.topleft[1]
