@@ -8,6 +8,9 @@ size = (576,1024)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
+#sounds settings
+#pygame.mixer.pre_init(44100,-16,2,512)
+
 #sky background
 class Sky(pygame.sprite.Sprite):
     def __init__(self):
@@ -52,7 +55,7 @@ class Pipe(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image,180)   
 
     def movement_pipe(self):
-        self.rect.x -= 8
+        self.rect.x -= 9
     
     def destroy_pipes(self):
         if self.rect.right < 0:
@@ -70,6 +73,8 @@ class Bird(pygame.sprite.Sprite):
         self.down_flap = pygame.transform.scale2x(self.down_flap)
         self.up_flap = pygame.image.load('assets/redbird-upflap.png').convert_alpha()
         self.up_flap = pygame.transform.scale2x(self.up_flap)
+        self.fly_sound = pygame.mixer.Sound('sound/sfx_wing.wav')
+        self.fly_sound.set_volume(0.5)
         
         self.image = pygame.image.load('assets/redbird-midflap.png').convert_alpha()
         self.image = pygame.transform.scale2x(self.image)
@@ -88,7 +93,9 @@ class Bird(pygame.sprite.Sprite):
     def jump_bird(self):
         self.gravity = -20
         self.image = self.down_flap
-        
+        if not pygame.mixer.get_busy():
+            self.fly_sound.play()
+
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
@@ -107,7 +114,6 @@ class Bird(pygame.sprite.Sprite):
         self.gravity_force_for_bird()
         self.rotate_bird()
         
-
 #Instances
 sky = Sky()
 ground = Ground()
