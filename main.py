@@ -94,8 +94,6 @@ class Bird(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             self.jumping = True
             self.jump_bird()
-        
-        
         else:
             self.jumping = False
     
@@ -103,7 +101,6 @@ class Bird(pygame.sprite.Sprite):
         self.player_input()
         self.gravity_force_for_bird()
         
-
 #Instances
 sky = Sky()
 ground = Ground()
@@ -123,12 +120,23 @@ player_group = pygame.sprite.GroupSingle()
 player_group.add(bird)
 
 obstacle_group = pygame.sprite.Group()
+#obstacles will be added on game loop dinamically
 
 #Timer for create random pipes obstalces.
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer,1200)
 
 pipe_gap = -300
+
+#collison manager
+def detect_collisions():
+    '''Return true if bird collide with a pipe'''
+    #Collisions detect
+    if pygame.sprite.spritecollide(player_group.sprite,obstacle_group,False):
+        return True
+    else:
+         return False
+
 
 while True:
     for event in pygame.event.get():
@@ -148,7 +156,6 @@ while True:
             obstacle_group.add(pipe)
             obstacle_group.add(pipe_2)
     
-            
     #draw and update all scenario
     ground_group.update()
     obstacle_group.update()
@@ -159,7 +166,11 @@ while True:
     #draw and update player
     player_group.draw(screen)
     player_group.update()
-    #print(player_group.sprite.jumping) Como acceder al objeto sprite dentro de un grupo
+    #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
+    
+    collisions = detect_collisions()
+    print(collisions)
+    
     pygame.display.update()
     
     clock.tick(60)    
