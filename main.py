@@ -149,7 +149,8 @@ def detect_collisions():
         return True
     else:
          return False
-
+##collision sound efect
+collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
 
 #Game control Variables.
 
@@ -185,7 +186,8 @@ while True:
     #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
     
     collisions = detect_collisions()
-    print(collisions)
+    if collisions:
+        collisions_sound.play()
     
     pygame.display.update()
     
