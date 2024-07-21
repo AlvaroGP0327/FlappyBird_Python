@@ -146,6 +146,7 @@ def detect_collisions():
     '''Return true if bird collide with a pipe'''
     #Collisions detect
     if pygame.sprite.spritecollide(player_group.sprite,obstacle_group,False):
+        obstacle_group.empty()
         return True
     else:
          return False
@@ -153,6 +154,7 @@ def detect_collisions():
 collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
 
 #Game control Variables.
+game_active = True
 
 
 while True:
@@ -161,33 +163,42 @@ while True:
             pygame.quit()
             sys.exit()
             
-        if event.type == obstacle_timer:
-            #set position before instantiate pipes
-            #random position for bottom pipe
-            topleft_pipe_position = choice([400,500,600,750]) #topleft
-            pipe = Pipe(topleft_pipe_position)
-            #get the y position relative to bottom pipe position
-            top_pipe_position = pipe.rect.topleft[1]
-            top_pipe_position += pipe_gap
-            pipe_2 = Pipe(top_pipe_position,is_flipped=True)
-            obstacle_group.add(pipe)
-            obstacle_group.add(pipe_2)
+        if game_active:
+            if event.type == obstacle_timer:
+                #set position before instantiate pipes
+                #random position for bottom pipe
+                topleft_pipe_position = choice([400,500,600,750]) #topleft
+                pipe = Pipe(topleft_pipe_position)
+                #get the y position relative to bottom pipe position
+                top_pipe_position = pipe.rect.topleft[1]
+                top_pipe_position += pipe_gap
+                pipe_2 = Pipe(top_pipe_position,is_flipped=True)
+                obstacle_group.add(pipe)
+                obstacle_group.add(pipe_2)
+        else:
+            if event.type == pygame.KEYDOWN:
+                if event.key ==pygame.K_r:
+                    game_active = True
     
+    if game_active:
     #draw and update all scenario
-    ground_group.update()
-    obstacle_group.update()
-    sky_group.draw(screen)
-    obstacle_group.draw(screen)
-    ground_group.draw(screen)
-    
-    #draw and update player
-    player_group.draw(screen)
-    player_group.update()
-    #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
-    
-    collisions = detect_collisions()
-    if collisions:
-        collisions_sound.play()
+        ground_group.update()
+        obstacle_group.update()
+        sky_group.draw(screen)
+        obstacle_group.draw(screen)
+        ground_group.draw(screen)
+        
+        #draw and update player
+        player_group.draw(screen)
+        player_group.update()
+        #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
+        
+        collisions = detect_collisions()
+        if collisions:
+            collisions_sound.play()
+            game_active = False
+    else:
+        screen.fill('yellow')    
     
     pygame.display.update()
     
