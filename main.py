@@ -146,16 +146,17 @@ def detect_collisions():
     '''Return true if bird collide with a pipe'''
     #Collisions detect
     if pygame.sprite.spritecollide(player_group.sprite,obstacle_group,False):
+        #after collide remove all sprites from obstacle group
         obstacle_group.empty()
+        
         return True
     else:
-         return False
+        return False
 ##collision sound efect
 collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
 
 #Game control Variables.
 game_active = True
-
 
 while True:
     for event in pygame.event.get():
@@ -176,12 +177,15 @@ while True:
                 obstacle_group.add(pipe)
                 obstacle_group.add(pipe_2)
         else:
+            #logic for restart game
             if event.type == pygame.KEYDOWN:
                 if event.key ==pygame.K_r:
+                    player_group.sprite.rect.topleft = (50,512)
                     game_active = True
     
     if game_active:
     #draw and update all scenario
+    #detect collisions
         ground_group.update()
         obstacle_group.update()
         sky_group.draw(screen)
