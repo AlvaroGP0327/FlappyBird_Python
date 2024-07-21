@@ -76,8 +76,7 @@ class Bird(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(50,512))
         
         #bird object initiate with force gravity action.
-        self.gravity = 2
-        self.fly_bird = 15
+        self.gravity = 0
         self.jumping = False
     
     def gravity_force_for_bird(self):
@@ -87,15 +86,16 @@ class Bird(pygame.sprite.Sprite):
             self.image = self.up_flap
         
     def jump_bird(self):
-        self.rect.y -= self.fly_bird
+        self.gravity = -20
         self.image = self.down_flap
-    
+        
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             self.jumping = True
-            self.gravity = 0
             self.jump_bird()
+        
+        
         else:
             self.jumping = False
     
