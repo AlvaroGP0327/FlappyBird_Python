@@ -97,10 +97,17 @@ class Bird(pygame.sprite.Sprite):
         else:
             self.jumping = False
     
+    def rotate_bird(self):
+        angle = -self.gravity * 2 #positive gravity bird look to sky #negative gravity bird look to ground
+        self.image = pygame.transform.rotate(self.image,angle=angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+    
     def update(self):
         self.player_input()
         self.gravity_force_for_bird()
+        self.rotate_bird()
         
+
 #Instances
 sky = Sky()
 ground = Ground()
@@ -136,6 +143,9 @@ def detect_collisions():
         return True
     else:
          return False
+
+
+#Game control Variables.
 
 
 while True:
