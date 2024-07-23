@@ -119,12 +119,18 @@ class Score(pygame.sprite.Sprite):
         super().__init__()
         self.path_style_font = 'assets/fonts/04B_19.TTF' 
         self.text_font = pygame.font.Font(self.path_style_font,25)
-        self.score_text = 'Score:'
-        self.image = self.text_font.render(self.score_text,False,'black')
+        self.score = ""
+        self.image = self.text_font.render(self.score,False,'black')
         self.rect = self.image.get_rect(topleft=(50,20))
+        self.time_life_game = 0
+
+    def measure_time(self):
+        self.time_life_game = int((pygame.time.get_ticks()-start_time)/1000) 
+        self.image = self.text_font.render(f"Score: {str(self.time_life_game)}",False,'black') 
     
-    def update():
-        pass
+    def update(self):
+        self.measure_time()           
+        
 
 #Instances
 sky = Sky()
@@ -172,7 +178,8 @@ def detect_collisions():
 collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
 
 #Game control Variables.
-game_active = True
+game_active = False
+start_time = 0 #declarar para medir el tiempo desde que se inicia la partida
 
 while True:
     for event in pygame.event.get():
@@ -198,6 +205,7 @@ while True:
                 if event.key ==pygame.K_r:
                     player_group.sprite.rect.topleft = (50,512)
                     game_active = True
+                    start_time = pygame.time.get_ticks()
     
     if game_active:
     #draw and update all scenario
@@ -208,6 +216,7 @@ while True:
         obstacle_group.draw(screen)
         ground_group.draw(screen)
         score_group.draw(screen)
+        score_group.update()
         
         #draw and update player
         player_group.draw(screen)
