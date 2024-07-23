@@ -123,10 +123,15 @@ class Score(pygame.sprite.Sprite):
         self.image = self.text_font.render(self.score,False,'black')
         self.rect = self.image.get_rect(topleft=(50,20))
         self.time_life_game = 0
+        self.tick_sound = pygame.mixer.Sound('sound/sfx_point.wav')
+        self.tick_sound.set_volume(0.2)
 
     def measure_time(self):
+        '''Mide la duracion de una partida.'''
         self.time_life_game = int((pygame.time.get_ticks()-start_time)/1000) 
-        self.image = self.text_font.render(f"Score: {str(self.time_life_game)}",False,'black') 
+        self.image = self.text_font.render(f"Score: {str(self.time_life_game)}",False,'black')
+        if not pygame.mixer.get_busy():
+            self.tick_sound.play() 
     
     def update(self):
         self.measure_time()           
