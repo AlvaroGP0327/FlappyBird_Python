@@ -2,7 +2,6 @@ import pygame, sys, os
 from random import randint, choice
 import random
 
-
 pygame.init()
 size = (576,1024) 
 screen = pygame.display.set_mode(size)
@@ -105,6 +104,7 @@ class Bird(pygame.sprite.Sprite):
             self.jumping = False
     
     def rotate_bird(self):
+        #method for rotate a base image.
         angle = -self.gravity * 2 #positive gravity bird look to sky #negative gravity bird look to ground
         self.image = pygame.transform.rotate(self.image,angle=angle)
         self.rect = self.image.get_rect(center=self.rect.center)
@@ -114,12 +114,25 @@ class Bird(pygame.sprite.Sprite):
         self.gravity_force_for_bird()
         self.rotate_bird()
         
+class Score(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.path_style_font = 'assets/fonts/04B_19.TTF' 
+        self.text_font = pygame.font.Font(self.path_style_font,25)
+        self.score_text = 'Score:'
+        self.image = self.text_font.render(self.score_text,False,'black')
+        self.rect = self.image.get_rect(topleft=(50,20))
+    
+    def update():
+        pass
+
 #Instances
 sky = Sky()
 ground = Ground()
 ground_2 = Ground()
 ground_2.initial_position()
 bird = Bird()
+score = Score()
 
 #Sprite Groups
 sky_group = pygame.sprite.GroupSingle()
@@ -134,6 +147,9 @@ player_group.add(bird)
 
 obstacle_group = pygame.sprite.Group()
 #obstacles will be added on game loop dinamically
+
+score_group = pygame.sprite.GroupSingle()
+score_group.add(score)
 
 #Timer for create random pipes obstalces.
 obstacle_timer = pygame.USEREVENT + 1
@@ -191,6 +207,7 @@ while True:
         sky_group.draw(screen)
         obstacle_group.draw(screen)
         ground_group.draw(screen)
+        score_group.draw(screen)
         
         #draw and update player
         player_group.draw(screen)
@@ -205,5 +222,4 @@ while True:
         screen.fill('yellow')    
     
     pygame.display.update()
-    
     clock.tick(60)    
