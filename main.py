@@ -179,11 +179,20 @@ def detect_collisions():
     #Collisions detect
     if pygame.sprite.spritecollide(player_group.sprite,obstacle_group,False):
         #after collide remove all sprites from obstacle group
+        collisions_sound.play()
         obstacle_group.empty()
         
         return True
     else:
         return False
+
+def fall_detection():
+    if player_group.sprite.rect.top >= 1024:
+        fall_sound.play()
+        
+        return True
+    return False
+
 ##collision sound efect
 collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
 fall_sound = pygame.mixer.Sound('sound/sfx_die.wav')
@@ -236,9 +245,10 @@ while True:
         #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
         
         collisions = detect_collisions()
+        fall = fall_detection()
 
-        if collisions:
-             collisions_sound.play()
+        if collisions or fall:
+             #collisions_sound.play()
              game_active = False
         
     else:
