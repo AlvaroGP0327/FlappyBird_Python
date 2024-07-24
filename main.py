@@ -8,8 +8,9 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 #sounds settings
-#pygame.mixer.pre_init(44100,-16,2,512)
-
+pygame.mixer.set_num_channels(8)
+pygame.mixer.pre_init(44100,-16,2,512)
+pygame.mixer.init()
 #sky background
 class Sky(pygame.sprite.Sprite):
     def __init__(self):
@@ -82,7 +83,7 @@ class Bird(pygame.sprite.Sprite):
         #bird object initiate with force gravity action.
         self.gravity = 0
         self.jumping = False
-    
+        
     def gravity_force_for_bird(self):
         self.gravity += 1
         self.rect.y += self.gravity
@@ -92,9 +93,9 @@ class Bird(pygame.sprite.Sprite):
     def jump_bird(self):
         self.gravity = -20
         self.image = self.down_flap
-        if not pygame.mixer.get_busy():
-            self.fly_sound.play()
-
+        if not pygame.mixer.Channel(0).get_busy():
+            pygame.mixer.Channel(0).play(self.fly_sound)
+        
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
@@ -125,13 +126,17 @@ class Score(pygame.sprite.Sprite):
         self.time_life_game = 0
         self.tick_sound = pygame.mixer.Sound('sound/sfx_point.wav')
         self.tick_sound.set_volume(0.2)
-
+        
     def measure_time(self):
-        '''Mide la duracion de una partida.'''
+        # '''Mide la duracion de una partida.'''
+        # self.time_life_game = int((pygame.time.get_ticks()-start_time)/1000) 
+        # self.image = self.text_font.render(f"Score: {str(self.time_life_game)}",False,'black')
+        # #self.tick_sound.play()
+        
         self.time_life_game = int((pygame.time.get_ticks()-start_time)/1000) 
         self.image = self.text_font.render(f"Score: {str(self.time_life_game)}",False,'black')
-        if not pygame.mixer.get_busy():
-            self.tick_sound.play() 
+        if not pygame.mixer.Channel(1).get_busy():
+            pygame.mixer.Channel(1).play(self.tick_sound)
     
     def update(self):
         self.measure_time()           
@@ -181,6 +186,7 @@ def detect_collisions():
         return False
 ##collision sound efect
 collisions_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
+fall_sound = pygame.mixer.Sound('sound/sfx_die.wav')
 
 #Game control Variables.
 game_active = False
@@ -209,6 +215,7 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key ==pygame.K_r:
                     player_group.sprite.rect.topleft = (50,512)
+                    player_group.sprite.gravity = 0
                     game_active = True
                     start_time = pygame.time.get_ticks()
     
@@ -229,9 +236,11 @@ while True:
         #print(player_group.sprite.jumping) Como acceder a un objeto sprite dentro de un grupo
         
         collisions = detect_collisions()
+
         if collisions:
-            collisions_sound.play()
-            game_active = False
+             collisions_sound.play()
+             game_active = False
+        
     else:
         screen.fill('yellow')    
     
