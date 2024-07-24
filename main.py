@@ -250,9 +250,12 @@ while True:
         if collisions or fall:
              #collisions_sound.play()
              game_active = False
-        
+
     else:
-        screen.fill('yellow')    
+        #IMPLEMENTAR EL ESTADO DE GAME OVER.
+        screen.fill('yellow')
+        score_group.draw(screen)
+         
     
     pygame.display.update()
     clock.tick(60)    
